@@ -1,35 +1,36 @@
 package com.udacity.vehicles.config;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import java.util.Collections;
+
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+
 
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
+
+
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo());
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("cars")
+                .pathsToMatch("/cars/**")
+                .build();
     }
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Vehicle API",
-                "Returns List Of Vehicles with thier locations and Maps.",
-                "1.0",
-                "http://www.udacity.com/tos",
-                new Contact("Olacios ", "www.udacity.com", "myeaddress@udacity.com"),
-                "License of API", "http://www.udacity.com/license", Collections.emptyList());
+
+    @Bean
+    public OpenAPI locationOpenAPI() {
+        return new OpenAPI()
+                .info(new Info().title("Vehicles API")
+                        .description("This API returns a list of Vehicles.")
+                        .version("v0.0.1")
+                        .license(new License().name("Vehicles API").url("http://www.udacity.com/tos")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("License of API")
+                        .url("\"http://www.udacity.com/license"));
     }
 }
